@@ -1,1 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>I2C LCD Library code</title>
+  <meta name="description" content="One-click Copy page for sharing code." />
+  <style>
+    :root{
+      --bg: #f7fafc; --card:#ffffff; --text:#151923; --brand:#2563eb; --brand-2:#22c55e; --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; --rounded:16px;
+    }
+    *{box-sizing:border-box}
+    body{margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Arial; color:var(--text); background:#f7fbff}
+    .wrap{max-width: 840px; margin: 28px auto; padding: 12px}
+    .card{background:var(--card); border-radius:var(--rounded); box-shadow:0 8px 24px rgba(16,24,40,.06); padding:18px}
+    h1{margin:2px 0 12px; font-size: clamp(22px, 3vw, 30px)}
 
+    .tools{display:flex; gap:10px; margin: 8px 0 12px}
+    button{appearance:none; border:0; border-radius:999px; padding:10px 16px; font-weight:700; cursor:pointer; background:var(--brand); color:#fff; transition:transform .05s ease}
+    button:active{transform:translateY(1px)}
+    .copied{background:var(--brand-2)!important}
+
+    .codewrap{position:relative}
+    pre{margin:0; background:#0b1220; color:#e4ecff; border-radius:12px; padding:14px; line-height:1.4; font-family:var(--mono); font-size:14px; overflow:auto; max-height:240px}
+    code{font-family:var(--mono)}
+
+    @media (prefers-color-scheme: dark){
+      body{background:#0b1220; color:#eef2ff}
+      .card{background:#0e1526; box-shadow:none}
+      pre{background:#050816; color:#dbe7ff}
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>I2C LCD Library code</h1>
+
+      <div class="tools">
+        <button id="copyBtn" aria-label="Copy code">📋 Copy Code</button>
+      </div>
+
+      <div class="codewrap">
+        <pre id="code"><code>
+from machine import Pin, I2C
+
+# Initialize I2C on GP1 (SCL) and GP0 (SDA)
+i2c = I2C(0, scl=Pin(5), sda=Pin(4))
+
+# Scan for I2C devices and print their addresses in hexadecimal
+devices = i2c.scan()
+
+if devices:
+    print("I2C device(s) found:")
+    for device in devices:
+        print("Address in HEX: {}".format(hex(device)))
+else:
+    print("No I2C devices found")
+</code></pre>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const copyBtn = document.getElementById('copyBtn');
+    const codeEl = document.getElementById('code');
+
+    function getPlainCode(){
+      return codeEl.innerText.replace(/\n+$/,'');
+    }
+
+    async function copyCode(){
+      try{
+        await navigator.clipboard.writeText(getPlainCode());
+        copyBtn.classList.add('copied');
+        copyBtn.textContent = '✅ Copied!';
+        setTimeout(()=>{copyBtn.classList.remove('copied'); copyBtn.textContent='📋 Copy Code';}, 1800);
+      }catch(err){
+        const ta = document.createElement('textarea');
+        ta.value = getPlainCode();
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        copyBtn.textContent = '✅ Copied!';
+        setTimeout(()=>{copyBtn.textContent='📋 Copy Code';}, 1800);
+      }
+    }
+
+    copyBtn.addEventListener('click', copyCode);
+  </script>
+</body>
+</html>
